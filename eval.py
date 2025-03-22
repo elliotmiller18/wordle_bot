@@ -25,8 +25,7 @@ class Game:
         self.guesses = []
         self.target = target
 
-common_words = list()
-all_words = list()
+words = list()
 # priority queue of words by frequency
 most_common_words = list()
 
@@ -64,13 +63,11 @@ def main():
     with open('wordle.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
-            if len(row) == 3:
-                common_words.append(row[0])
-            all_words.append(row[0])
+            words.append(row[0])
             most_common_words.append( (float(row[1])*-1, row[0]) )
     heapify(most_common_words)
     # check if provided word is a word in our db
-    assert(argv[1] in all_words)
+    assert(argv[1] in words)
 
     target = argv[1]
     game = Game(target)
