@@ -6,58 +6,69 @@ from sys import argv
 #TODO: fix aeros
 
 class Game:
-    def check_guess(self, guess) -> list:
-        answers = ['N'] * 5
+
+    def add_guess(self, guess):
         self.guesses.append(guess)
+
+    def check_win(self) -> bool:
+        for answer in self.answers:
+            if answer != 'G':
+                self.correct = False
+                return False
+        return True
+
+    def check_guess(self, guess) -> list:
+        self.answers = ['*'] * 5
         for i in range(len(self.target)):
             if guess[i] == self.target[i]:
-                answers[i] = 'G'
+                self.answers[i] = 'G'
             elif guess[i] in self.target:
-                answers[i] = 'Y'
-        for answer in answers:
-            if answer != 'G':
-                self.correct = False 
-                return answers
-        self.correct = True
-        return answers
+                self.answers[i] = 'Y'
+        return self.answers
+    
+    def get_guess(self) -> str:
+        guess = self.guesses[-1]
+        while True:
+            # get word without frequency
+            word = heappop(most_common_words)[1]
+            temp = word
+            valid = True
+            for i, color in enumerate(self.answers):
+                if color == 'G':
+                    if word[i] != guess[i]:
+                        valid = False
+                        break
+                elif color == 'Y':
+                    if guess[i] == word[i] or guess[i] not in temp:
+                        valid = False
+                        break
+                    # remove that character in case we have 2 or 3 yellows with the same letter
+                    temp = temp.replace(guess[i],"*",1)
+            if valid:
+                return word
+            
 
-    def __init__(self, target):
-        self.guesses = []
+    def __init__(self, target, probing):
+        self.correct = False
         self.target = target
+        self.answers = ['*'] * 5
+        self.guesses = [probing]
+        self.check_guess(probing)
+
+    def print_guess(self, guess: str):
+        for i, g in enumerate(guess):
+                if self.answers[i] == 'G':
+                    print(f"\033[92m{g}\033[0m", end="")
+                elif self.answers[i] == 'Y':
+                    print(f"\033[93m{g}\033[0m", end="")
+                else:
+                    print(g, end="")
+        print()
+
 
 words = list()
 # priority queue of words by frequency
 most_common_words = list()
-
-def print_guess(answers: list, guess: str):
-    for i, g in enumerate(guess):
-            if answers[i] == 'G':
-                print(f"\033[92m{g}\033[0m", end="")
-            elif answers[i] == 'Y':
-                print(f"\033[93m{g}\033[0m", end="")
-            else:
-                print(g, end="")
-    print()
-
-def get_guess(green: list, yellow: dict) -> str:
-    while True:
-        valid = True
-        word = heappop(most_common_words)[1]
-        for i, g in enumerate(green):
-            if g != word[i] and g != '*':
-                valid = False
-                break
-        # v is the number k in the yellow letters
-        for k, v in yellow.items():
-            temp = list(word)
-            for _ in range(v):
-                try:
-                    temp.remove(k)
-                except ValueError:
-                    valid = False 
-                    break
-        if valid:
-            return word
 
 def main():
     with open('wordle.csv', 'r') as file:
@@ -70,27 +81,17 @@ def main():
     assert(argv[1] in words)
 
     target = argv[1]
-    game = Game(target)
+    probing = argv[2]
+    game = Game(target, probing)
+    game.print_guess(probing)
 
-    green = ["*"] * 5
-    yellow = defaultdict(int)
+    while not game.check_win():
+        
+        guess = game.get_guess()
+        game.add_guess(guess)
+        game.check_guess(guess)
+        game.print_guess(guess)
 
-    while True:
-        guess = get_guess(green, yellow)
-        answers = game.check_guess(guess)
-        print_guess(answers, guess)
-
-        if game.correct:
-            break
-
-        yellow = defaultdict(int)
-        for i, answer in enumerate(answers):
-            if answer == 'G':
-                green[i] = guess[i]
-            else:
-                green[i] = '*'
-            if answer == 'Y':
-                yellow[guess[i]] += 1
     print(f"guesses: {len(game.guesses)}")
 
 if __name__ == "__main__":
