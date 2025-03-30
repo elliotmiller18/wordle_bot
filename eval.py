@@ -9,6 +9,8 @@ words = list()
 # priority queue of words by frequency
 most_common_words = list()
 
+#TODO: check elbow
+
 def trim_allowed(allowed: list, answers: list, guess: str):
     yellow = set()
     for i, answer in enumerate(answers):
@@ -21,7 +23,7 @@ def trim_allowed(allowed: list, answers: list, guess: str):
                 allowed[i].remove(g)
         elif g not in yellow:
             for j in range(len(allowed)):
-                if g in allowed[j]:
+                if g in allowed[j] and len(allowed[j]) > 1:
                     allowed[j].remove(g)
 
 def get_guess(allowed: list, used: dict) -> str:
