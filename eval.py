@@ -10,7 +10,6 @@ words = list()
 most_common_words = list()
 
 def trim_allowed(allowed: list, answers: list, guess: str):
-    #TODO: if we have a word like sorry, and only the first r is yellow, this will remove the second r from all others and not let us guess an r
     yellow = set()
     for i, answer in enumerate(answers):
         g = guess[i]
