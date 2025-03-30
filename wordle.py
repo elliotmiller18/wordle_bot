@@ -10,6 +10,7 @@ class Game:
             if answer != 'G':
                 self.correct = False
                 return False
+        self.correct = True
         return True
 
     def check_guess(self, guess) -> list:
