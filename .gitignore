@@ -1,4 +1,5 @@
-wordle.csv
 .vscode
 env
 eval.py
+__pycache__
+wordle.csv
