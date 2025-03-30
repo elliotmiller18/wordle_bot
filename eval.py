@@ -5,22 +5,22 @@ from sys import argv
 from wordle import Game
 from string import ascii_lowercase
 
-#TODO: check sorry (probing), peter (answer)
-
 words = list()
 # priority queue of words by frequency
 most_common_words = list()
 
 def trim_allowed(allowed: list, answers: list, guess: str):
     #TODO: if we have a word like sorry, and only the first r is yellow, this will remove the second r from all others and not let us guess an r
+    yellow = set()
     for i, answer in enumerate(answers):
         g = guess[i]
         if answer == 'G':
             allowed[i] = set(g)
         elif answer == 'Y':
+            yellow.add(g)
             if g in allowed[i]:
                 allowed[i].remove(g)
-        else:
+        elif g not in yellow:
             for j in range(len(allowed)):
                 if g in allowed[j]:
                     allowed[j].remove(g)
