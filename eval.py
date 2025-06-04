@@ -9,8 +9,6 @@ words = list()
 # priority queue of words by frequency
 most_common_words = list()
 
-#TODO: check elbow
-
 def trim_allowed(allowed: list, answers: list, guess: str):
     yellow = set()
     for i, answer in enumerate(answers):
@@ -41,18 +39,20 @@ def get_guess(allowed: list, used: dict) -> str:
             return word
 
 def main():
+
+    target = argv[1]
+    probing = 'aeros' if len(argv) <= 2 else argv[2]
+
     with open('wordle.csv', 'r') as file:
         reader = csv.reader(file)
         for row in reader:
             words.append(row[0])
             # dont add probing guess to guesses q
-            if row[0] == argv[2]:
+            if row[0] == probing:
                 continue
             most_common_words.append( (float(row[1])*-1, row[0]) )
     heapify(most_common_words)
 
-    target = argv[1]
-    probing = argv[2]
     assert(target in words and probing in words)
 
     game = Game(target)
