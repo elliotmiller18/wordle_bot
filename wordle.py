@@ -1,5 +1,3 @@
-from sys import argv
-
 class Game:
 
     def add_guess(self, guess):
