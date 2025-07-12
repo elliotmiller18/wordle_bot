@@ -14,18 +14,6 @@ This repository contains:
 
 ---
 
-## How the Solver Works
-1. **Frequency-weighted search**  
-   `wordle.csv` is loaded into a **min-heap** keyed by `-frequency`, so the most common words pop first.
-2. **Constraint propagation**  
-   After every guess the heuristic `trim_allowed` prunes impossible letters / positions while tracking “must-contain” letters and multiplicities.
-3. **Greedy next-word selection**  
-   `get_guess` repeatedly pops the heap until it finds a word consistent with all current constraints.
-4. **Performance**  
-   The algorithm is deterministic, has no heavy ML, and completes hundreds of games per second.
-
----
-
 ## Quick Start
 
 ```bash
