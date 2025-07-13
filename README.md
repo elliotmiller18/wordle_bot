@@ -33,4 +33,4 @@ python3 eval.py crane          # uses default probing word "aeros"
 python3 eval.py crane raise    # custom probing word "raise"
 
 # 5. Run full benchmark
-python3 bench.py
+python3 test.py
